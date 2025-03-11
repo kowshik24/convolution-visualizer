@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Convolution Visualizer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Interactive Convolution Visualizer</h1>
+        <p class="description">
+            This interactive visualization demonstrates how various convolution parameters affect shapes and data dependencies 
+            between the input, weight, and output matrices. Hover over an input/output cell to highlight the corresponding 
+            output/input cells, or hover over a weight to highlight which inputs were used to compute an output.
+        </p>
+        <div class="controls">
+            <div class="control-group">
+                <label for="input-size">Input size:</label>
+                <div class="size-controls">
+                    <input type="number" id="input-height" min="1" max="10" value="5">
+                    <span>×</span>
+                    <input type="number" id="input-width" min="1" max="10" value="5">
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="kernel-size">Kernel size:</label>
+                <div class="size-controls">
+                    <input type="number" id="kernel-height" min="1" max="7" value="3">
+                    <span>×</span>
+                    <input type="number" id="kernel-width" min="1" max="7" value="3">
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="padding">Padding:</label>
+                <input type="number" id="padding" min="0" max="5" value="0">
+            </div>
+            <div class="control-group">
+                <label for="dilation">Dilation:</label>
+                <input type="number" id="dilation" min="1" max="5" value="1">
+            </div>
+            <div class="control-group">
+                <label for="stride">Stride:</label>
+                <input type="number" id="stride" min="1" max="5" value="1">
+            </div>
+            <button id="update-btn">Update Visualization</button>
+        </div>
+
+        <div class="visualization">
+            <div class="matrix-container">
+                <h2>Input Matrix (<span id="input-dim">5 × 5</span>)</h2>
+                <div class="matrix" id="input-matrix"></div>
+            </div>
+            <div class="matrix-container">
+                <h2>Weight Matrix (<span id="kernel-dim">3 × 3</span>)</h2>
+                <div class="matrix" id="weight-matrix"></div>
+            </div>
+            <div class="matrix-container">
+                <h2>Output Matrix (<span id="output-dim">3 × 3</span>)</h2>
+                <div class="matrix" id="output-matrix"></div>
+            </div>
+        </div>
+
+        <div class="animation-controls">
+            <button id="animate-btn">Animate Convolution</button>
+            <button id="stop-btn">Stop Animation</button>
+            <div class="animation-speed">
+                <label for="speed">Animation Speed:</label>
+                <input type="range" id="speed" min="1" max="10" value="5">
+            </div>
+        </div>
+
+        <div class="explanation">
+            <h3>How It Works</h3>
+            <p>
+                In a convolution operation, a weight matrix (or kernel) slides over an input matrix to produce an output matrix.
+                Each output value is computed as a weighted sum of input values covered by the kernel.
+            </p>
+            <p>
+                The operation visualized here is technically a correlation, not a convolution, as true convolutions flip their weights.
+                However, most deep learning frameworks still call these convolutions.
+            </p>
+            <p>
+                <strong>Parameters explained:</strong>
+            </p>
+            <ul>
+                <li><strong>Input size:</strong> The dimensions of the input matrix</li>
+                <li><strong>Kernel size:</strong> The dimensions of the weight matrix (kernel)</li>
+                <li><strong>Padding:</strong> Extra cells added around the input matrix</li>
+                <li><strong>Dilation:</strong> Spacing between kernel elements</li>
+                <li><strong>Stride:</strong> How far the kernel moves in each step</li>
+            </ul>
+        </div>
+    </div>
+    <footer>
+        <p>Created by <span id="github-username">kowshik24</span></p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

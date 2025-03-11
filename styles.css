@@ -1,0 +1,236 @@
+:root {
+    --input-color: #e3f2fd;
+    --weight-color: #ffecb3;
+    --output-color: #e8f5e9;
+    --highlight-color: #ff9800;
+    --weight-highlight: #f44336;
+    --input-highlight: #2196f3;
+    --output-highlight: #4caf50;
+    --padding-color: #eeeeee;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fafafa;
+}
+
+.container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 30px;
+}
+
+h1 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+.description {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 30px;
+    color: #555;
+}
+
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: center;
+    justify-content: center;
+    background-color: #f5f7f9;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 30px;
+}
+
+.control-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.size-controls {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+input[type="number"] {
+    width: 60px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-align: center;
+}
+
+button {
+    background-color: #4285f4;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #3367d6;
+}
+
+#stop-btn {
+    background-color: #f44336;
+}
+
+#stop-btn:hover {
+    background-color: #d32f2f;
+}
+
+.visualization {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.matrix-container {
+    text-align: center;
+}
+
+.matrix-container h2 {
+    margin-bottom: 10px;
+    font-size: 1.3rem;
+    color: #2c3e50;
+}
+
+.matrix {
+    display: inline-grid;
+    gap: 2px;
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+}
+
+.cell {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: monospace;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    user-select: none;
+}
+
+.input-cell {
+    background-color: var(--input-color);
+}
+
+.weight-cell {
+    background-color: var(--weight-color);
+}
+
+.output-cell {
+    background-color: var(--output-color);
+}
+
+.padding-cell {
+    background-color: var(--padding-color);
+    color: #999;
+}
+
+.highlight {
+    transform: scale(1.05);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.input-highlight {
+    background-color: var(--input-highlight);
+    color: white;
+}
+
+.weight-highlight {
+    background-color: var(--weight-highlight);
+    color: white;
+}
+
+.output-highlight {
+    background-color: var(--output-highlight);
+    color: white;
+}
+
+.animation-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.animation-speed {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.explanation {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 30px;
+}
+
+.explanation h3 {
+    color: #2c3e50;
+    margin-top: 0;
+}
+
+footer {
+    text-align: center;
+    margin-top: 30px;
+    color: #666;
+}
+
+@media (max-width: 768px) {
+    .visualization {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .controls {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .control-group {
+        width: 100%;
+    }
+}
+
+/* Animation classes */
+.current-kernel-position {
+    outline: 2px dashed #673ab7;
+}
+
+.active-calculation {
+    animation: pulse 1s infinite alternate;
+}
+
+@keyframes pulse {
+    from { opacity: 1; }
+    to { opacity: 0.6; }
+}
