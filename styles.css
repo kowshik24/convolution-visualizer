@@ -152,9 +152,10 @@ button:hover {
     background-position: center;
     background-repeat: no-repeat;
     color: white;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.9);
-    font-weight: bold;
+    text-shadow: 1px 1px 3px rgba(0,0,0,1);
+    font-weight: 900;
     position: relative;
+    font-size: 10px;
 }
 
 .input-cell.image-cell::after {
@@ -164,7 +165,7 @@ button:hover {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: rgba(0, 0, 0, 0.1);
     z-index: 1;
     pointer-events: none;
 }
@@ -172,7 +173,7 @@ button:hover {
 .input-cell.image-cell span {
     position: relative;
     z-index: 2;
-    font-size: 16px;
+    font-size: 10px;
     font-weight: 900;
 }
 
