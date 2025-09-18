@@ -10,17 +10,37 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentStep = 0;
     let animationSpeed = 500; // milliseconds
     
-    // Image data - simplified Lenna-like pattern (8x8 grayscale values)
-    // This represents a portion of a typical portrait with varied skin tones and features
-    const lennaImageData = [
-        [180, 175, 170, 165, 160, 158, 155, 150],
-        [185, 180, 175, 170, 165, 162, 160, 155],
-        [190, 185, 180, 175, 170, 168, 165, 160],
-        [195, 190, 185, 180, 175, 173, 170, 165],
-        [200, 195, 190, 185, 180, 178, 175, 170],
-        [205, 200, 195, 190, 185, 183, 180, 175],
-        [210, 205, 200, 195, 190, 188, 185, 180],
-        [215, 210, 205, 200, 195, 193, 190, 185]
+    // CIFAR-like 28x28 grayscale image data representing a simple object (car/plane)
+    // Values are actual pixel intensities (0-255) without normalization
+    const cifarImageData = [
+        [45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150, 155, 160, 165, 170, 175, 180],
+        [50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150, 155, 160, 165, 170, 175, 180, 185],
+        [55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150, 155, 160, 165, 170, 175, 180, 185, 190],
+        [60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150, 155, 160, 165, 170, 175, 180, 185, 190, 195],
+        [65, 70, 75, 80, 200, 210, 220, 230, 240, 250, 255, 250, 240, 230, 220, 210, 200, 190, 180, 170, 160, 150, 140, 130, 120, 110, 100, 90],
+        [70, 75, 80, 85, 210, 220, 230, 240, 250, 255, 255, 255, 250, 240, 230, 220, 210, 200, 190, 180, 170, 160, 150, 140, 130, 120, 110, 100],
+        [75, 80, 85, 90, 220, 230, 240, 250, 255, 255, 255, 255, 255, 250, 240, 230, 220, 210, 200, 190, 180, 170, 160, 150, 140, 130, 120, 110],
+        [80, 85, 90, 95, 230, 240, 250, 255, 255, 255, 255, 255, 255, 255, 250, 240, 230, 220, 210, 200, 190, 180, 170, 160, 150, 140, 130, 120],
+        [85, 90, 95, 100, 240, 250, 255, 255, 255, 255, 255, 255, 255, 255, 255, 250, 240, 230, 220, 210, 200, 190, 180, 170, 160, 150, 140, 130],
+        [90, 95, 100, 105, 250, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 250, 240, 230, 220, 210, 200, 190, 180, 170, 160, 150, 140],
+        [95, 100, 105, 110, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 250, 240, 230, 220, 210, 200, 190, 180, 170, 160, 150],
+        [100, 105, 110, 115, 250, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 250, 240, 230, 220, 210, 200, 190, 180, 170, 160, 150, 140],
+        [105, 110, 115, 120, 240, 250, 255, 255, 255, 255, 255, 255, 255, 255, 255, 250, 240, 230, 220, 210, 200, 190, 180, 170, 160, 150, 140, 130],
+        [110, 115, 120, 125, 230, 240, 250, 255, 255, 255, 255, 255, 255, 255, 250, 240, 230, 220, 210, 200, 190, 180, 170, 160, 150, 140, 130, 120],
+        [115, 120, 125, 130, 220, 230, 240, 250, 255, 255, 255, 255, 255, 250, 240, 230, 220, 210, 200, 190, 180, 170, 160, 150, 140, 130, 120, 110],
+        [120, 125, 130, 135, 210, 220, 230, 240, 250, 255, 255, 255, 250, 240, 230, 220, 210, 200, 190, 180, 170, 160, 150, 140, 130, 120, 110, 100],
+        [125, 130, 135, 140, 200, 210, 220, 230, 240, 250, 255, 250, 240, 230, 220, 210, 200, 190, 180, 170, 160, 150, 140, 130, 120, 110, 100, 90],
+        [130, 135, 140, 145, 190, 200, 210, 220, 230, 240, 250, 240, 230, 220, 210, 200, 190, 180, 170, 160, 150, 140, 130, 120, 110, 100, 90, 80],
+        [135, 140, 145, 150, 180, 190, 200, 210, 220, 230, 240, 230, 220, 210, 200, 190, 180, 170, 160, 150, 140, 130, 120, 110, 100, 90, 80, 70],
+        [140, 145, 150, 155, 170, 180, 190, 200, 210, 220, 230, 220, 210, 200, 190, 180, 170, 160, 150, 140, 130, 120, 110, 100, 90, 80, 70, 60],
+        [145, 150, 155, 160, 160, 170, 180, 190, 200, 210, 220, 210, 200, 190, 180, 170, 160, 150, 140, 130, 120, 110, 100, 90, 80, 70, 60, 50],
+        [150, 155, 160, 165, 150, 160, 170, 180, 190, 200, 210, 200, 190, 180, 170, 160, 150, 140, 130, 120, 110, 100, 90, 80, 70, 60, 50, 40],
+        [155, 160, 165, 170, 140, 150, 160, 170, 180, 190, 200, 190, 180, 170, 160, 150, 140, 130, 120, 110, 100, 90, 80, 70, 60, 50, 40, 30],
+        [160, 165, 170, 175, 130, 140, 150, 160, 170, 180, 190, 180, 170, 160, 150, 140, 130, 120, 110, 100, 90, 80, 70, 60, 50, 40, 30, 20],
+        [165, 170, 175, 180, 120, 130, 140, 150, 160, 170, 180, 170, 160, 150, 140, 130, 120, 110, 100, 90, 80, 70, 60, 50, 40, 30, 20, 10],
+        [170, 175, 180, 185, 110, 120, 130, 140, 150, 160, 170, 160, 150, 140, 130, 120, 110, 100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 0],
+        [175, 180, 185, 190, 100, 110, 120, 130, 140, 150, 160, 150, 140, 130, 120, 110, 100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 0, 0],
+        [180, 185, 190, 195, 90, 100, 110, 120, 130, 140, 150, 140, 130, 120, 110, 100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 0, 0, 0]
     ];
     
     // Get DOM elements
@@ -197,15 +217,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const inputType = inputTypeEl.value;
         
         if (inputType === 'image') {
-            // Generate input matrix from image data
+            // Generate input matrix from CIFAR-like image data (no normalization)
             inputMatrix = Array(inputHeight).fill().map((_, i) => 
                 Array(inputWidth).fill().map((_, j) => {
-                    // Map to image data coordinates and normalize to 0-9 range
-                    const imgRow = Math.floor((i / inputHeight) * lennaImageData.length);
-                    const imgCol = Math.floor((j / inputWidth) * lennaImageData[0].length);
-                    const pixelValue = lennaImageData[imgRow][imgCol];
-                    // Convert from 0-255 to 0-9 range
-                    return Math.floor((pixelValue / 255) * 9);
+                    // Map to image data coordinates
+                    const imgRow = Math.floor((i / inputHeight) * cifarImageData.length);
+                    const imgCol = Math.floor((j / inputWidth) * cifarImageData[0].length);
+                    const pixelValue = cifarImageData[imgRow][imgCol];
+                    // Return actual pixel values (0-255) without normalization
+                    return pixelValue;
                 })
             );
         } else {
@@ -288,9 +308,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         // Calculate the corresponding image pixel
                         const actualRow = i - padding;
                         const actualCol = j - padding;
-                        const imgRow = Math.floor((actualRow / inputHeight) * lennaImageData.length);
-                        const imgCol = Math.floor((actualCol / inputWidth) * lennaImageData[0].length);
-                        const pixelValue = lennaImageData[imgRow][imgCol];
+                        const imgRow = Math.floor((actualRow / inputHeight) * cifarImageData.length);
+                        const imgCol = Math.floor((actualCol / inputWidth) * cifarImageData[0].length);
+                        const pixelValue = cifarImageData[imgRow][imgCol];
                         
                         // Set background color based on pixel value (grayscale)
                         cell.style.backgroundColor = `rgb(${pixelValue}, ${pixelValue}, ${pixelValue})`;
