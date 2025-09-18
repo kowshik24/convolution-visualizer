@@ -10,6 +10,19 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentStep = 0;
     let animationSpeed = 500; // milliseconds
     
+    // Image data - simplified Lenna-like pattern (8x8 grayscale values)
+    // This represents a portion of a typical portrait with varied skin tones and features
+    const lennaImageData = [
+        [180, 175, 170, 165, 160, 158, 155, 150],
+        [185, 180, 175, 170, 165, 162, 160, 155],
+        [190, 185, 180, 175, 170, 168, 165, 160],
+        [195, 190, 185, 180, 175, 173, 170, 165],
+        [200, 195, 190, 185, 180, 178, 175, 170],
+        [205, 200, 195, 190, 185, 183, 180, 175],
+        [210, 205, 200, 195, 190, 188, 185, 180],
+        [215, 210, 205, 200, 195, 193, 190, 185]
+    ];
+    
     // Get DOM elements
     const inputHeightEl = document.getElementById('input-height');
     const inputWidthEl = document.getElementById('input-width');
@@ -18,6 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const paddingEl = document.getElementById('padding');
     const dilationEl = document.getElementById('dilation');
     const strideEl = document.getElementById('stride');
+    const inputTypeEl = document.getElementById('input-type');
     const updateBtn = document.getElementById('update-btn');
     const animateBtn = document.getElementById('animate-btn');
     const stopBtn = document.getElementById('stop-btn');
@@ -180,10 +194,26 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function generateMatrices(inputHeight, inputWidth, kernelHeight, kernelWidth, padding, outputHeight, outputWidth) {
-        // Generate input matrix with random values (0-9)
-        inputMatrix = Array(inputHeight).fill().map(() => 
-            Array(inputWidth).fill().map(() => Math.floor(Math.random() * 10))
-        );
+        const inputType = inputTypeEl.value;
+        
+        if (inputType === 'image') {
+            // Generate input matrix from image data
+            inputMatrix = Array(inputHeight).fill().map((_, i) => 
+                Array(inputWidth).fill().map((_, j) => {
+                    // Map to image data coordinates and normalize to 0-9 range
+                    const imgRow = Math.floor((i / inputHeight) * lennaImageData.length);
+                    const imgCol = Math.floor((j / inputWidth) * lennaImageData[0].length);
+                    const pixelValue = lennaImageData[imgRow][imgCol];
+                    // Convert from 0-255 to 0-9 range
+                    return Math.floor((pixelValue / 255) * 9);
+                })
+            );
+        } else {
+            // Generate input matrix with random values (0-9)
+            inputMatrix = Array(inputHeight).fill().map(() => 
+                Array(inputWidth).fill().map(() => Math.floor(Math.random() * 10))
+            );
+        }
         
         // Generate weight matrix with random values (-2 to 2)
         weightMatrix = Array(kernelHeight).fill().map(() => 
@@ -237,6 +267,8 @@ document.addEventListener('DOMContentLoaded', function() {
         container.style.gridTemplateRows = `repeat(${matrix.length}, 40px)`;
         container.style.gridTemplateColumns = `repeat(${matrix[0].length}, 40px)`;
         
+        const inputType = inputTypeEl.value;
+        
         for (let i = 0; i < matrix.length; i++) {
             for (let j = 0; j < matrix[i].length; j++) {
                 const cell = document.createElement('div');
@@ -248,9 +280,28 @@ document.addEventListener('DOMContentLoaded', function() {
                     cell.classList.add('padding-cell');
                 } else {
                     cell.classList.add(`${type}-cell`);
+                    
+                    // Add image background for input cells when using image input
+                    if (type === 'input' && inputType === 'image' && !(i < padding || i >= inputHeight + padding || j < padding || j >= inputWidth + padding)) {
+                        cell.classList.add('image-cell');
+                        
+                        // Calculate the corresponding image pixel
+                        const actualRow = i - padding;
+                        const actualCol = j - padding;
+                        const imgRow = Math.floor((actualRow / inputHeight) * lennaImageData.length);
+                        const imgCol = Math.floor((actualCol / inputWidth) * lennaImageData[0].length);
+                        const pixelValue = lennaImageData[imgRow][imgCol];
+                        
+                        // Set background color based on pixel value (grayscale)
+                        cell.style.backgroundColor = `rgb(${pixelValue}, ${pixelValue}, ${pixelValue})`;
+                    }
                 }
                 
-                cell.textContent = matrix[i][j];
+                // Use a span for the text content to ensure it's above the background
+                const textSpan = document.createElement('span');
+                textSpan.textContent = matrix[i][j];
+                cell.appendChild(textSpan);
+                
                 container.appendChild(cell);
             }
         }
