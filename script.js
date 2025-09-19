@@ -328,6 +328,45 @@ document.addEventListener('DOMContentLoaded', function() {
                         // Set background color based on pixel value (grayscale)
                         cell.style.backgroundColor = `rgb(${pixelValue}, ${pixelValue}, ${pixelValue})`;
                     }
+                    
+                    // Add image-based background for output cells when using image input
+                    if (type === 'output' && inputType === 'image') {
+                        cell.classList.add('image-cell');
+                        
+                        // Map output value to a color intensity
+                        // Find min/max values in the output matrix for normalization
+                        const flatOutput = outputMatrix.flat();
+                        const minOutput = Math.min(...flatOutput);
+                        const maxOutput = Math.max(...flatOutput);
+                        const outputValue = matrix[i][j];
+                        
+                        // Normalize output value to 0-255 range for visualization
+                        let normalizedValue;
+                        if (maxOutput !== minOutput) {
+                            normalizedValue = Math.round(((outputValue - minOutput) / (maxOutput - minOutput)) * 255);
+                        } else {
+                            normalizedValue = 128; // Middle gray if all values are the same
+                        }
+                        
+                        // Apply a blue-to-red colormap for better visualization of positive/negative values
+                        let red, green, blue;
+                        if (outputValue < 0) {
+                            // Negative values: blue tones
+                            const intensity = Math.abs(outputValue - minOutput) / Math.abs(minOutput) * 255;
+                            red = Math.max(0, 255 - intensity);
+                            green = Math.max(0, 255 - intensity);
+                            blue = 255;
+                        } else {
+                            // Positive values: red tones
+                            const intensity = (outputValue / maxOutput) * 255;
+                            red = 255;
+                            green = Math.max(0, 255 - intensity);
+                            blue = Math.max(0, 255 - intensity);
+                        }
+                        
+                        // Set background color with transparency to show the pattern
+                        cell.style.backgroundColor = `rgba(${red}, ${green}, ${blue}, 0.6)`;
+                    }
                 }
                 
                 // Use a span for the text content to ensure it's above the background

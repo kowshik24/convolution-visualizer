@@ -185,6 +185,19 @@ button:hover {
     background-color: var(--output-color);
 }
 
+.output-cell.image-cell {
+    color: white;
+    text-shadow: 1px 1px 3px rgba(0,0,0,1);
+    font-weight: 900;
+    position: relative;
+}
+
+.output-cell.image-cell span {
+    position: relative;
+    z-index: 2;
+    font-weight: 900;
+}
+
 .padding-cell {
     background-color: var(--padding-color);
     color: #999;
