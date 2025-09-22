@@ -71,6 +71,14 @@ input[type="number"] {
     text-align: center;
 }
 
+select {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    min-width: 120px;
+}
+
 button {
     background-color: #4285f4;
     color: white;
@@ -139,12 +147,55 @@ button:hover {
     background-color: var(--input-color);
 }
 
+.input-cell.image-cell {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: white;
+    text-shadow: 1px 1px 3px rgba(0,0,0,1);
+    font-weight: 900;
+    position: relative;
+    font-size: 10px;
+}
+
+.input-cell.image-cell::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.1);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.input-cell.image-cell span {
+    position: relative;
+    z-index: 2;
+    font-size: 10px;
+    font-weight: 900;
+}
+
 .weight-cell {
     background-color: var(--weight-color);
 }
 
 .output-cell {
     background-color: var(--output-color);
+}
+
+.output-cell.image-cell {
+    color: white;
+    text-shadow: 1px 1px 3px rgba(0,0,0,1);
+    font-weight: 900;
+    position: relative;
+}
+
+.output-cell.image-cell span {
+    position: relative;
+    z-index: 2;
+    font-weight: 900;
 }
 
 .padding-cell {

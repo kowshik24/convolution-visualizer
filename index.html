@@ -18,9 +18,9 @@
             <div class="control-group">
                 <label for="input-size">Input size:</label>
                 <div class="size-controls">
-                    <input type="number" id="input-height" min="1" max="10" value="5">
+                    <input type="number" id="input-height" min="1" max="28" value="28">
                     <span>×</span>
-                    <input type="number" id="input-width" min="1" max="10" value="5">
+                    <input type="number" id="input-width" min="1" max="28" value="28">
                 </div>
             </div>
             <div class="control-group">
@@ -42,6 +42,13 @@
             <div class="control-group">
                 <label for="stride">Stride:</label>
                 <input type="number" id="stride" min="1" max="5" value="1">
+            </div>
+            <div class="control-group">
+                <label for="input-type">Input Type:</label>
+                <select id="input-type">
+                    <option value="random">Random Numbers</option>
+                    <option value="image">MNIST Digit (28×28)</option>
+                </select>
             </div>
             <button id="update-btn">Update Visualization</button>
         </div>
