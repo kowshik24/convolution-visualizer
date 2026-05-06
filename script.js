@@ -86,6 +86,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function startAnimation() {
+        if (!outputMatrix.length || !outputMatrix[0] || !outputMatrix[0].length) {
+            return;
+        }
+
         if (animationInterval) {
             stopAnimation();
         }
@@ -141,17 +145,19 @@ document.addEventListener('DOMContentLoaded', function() {
             outputCell.classList.add('output-highlight');
         }
         
-        // Highlight the corresponding input region
-        const inputStartRow = outputRow * stride - padding;
-        const inputStartCol = outputCol * stride - padding;
+        // Highlight the corresponding input region in the padded input grid
+        // (same coordinate space used by calculateOutputMatrix)
+        const inputStartRow = outputRow * stride;
+        const inputStartCol = outputCol * stride;
+        const paddedHeight = inputHeight + 2 * padding;
+        const paddedWidth = inputWidth + 2 * padding;
         
         for (let kh = 0; kh < kernelHeight; kh++) {
             for (let kw = 0; kw < kernelWidth; kw++) {
                 const inputRow = inputStartRow + kh * dilation;
                 const inputCol = inputStartCol + kw * dilation;
                 
-                // Check if this is a valid input position (not padding)
-                if (inputRow >= 0 && inputRow < inputHeight && inputCol >= 0 && inputCol < inputWidth) {
+                if (inputRow >= 0 && inputRow < paddedHeight && inputCol >= 0 && inputCol < paddedWidth) {
                     const inputCellId = `input-${inputRow}-${inputCol}`;
                     const inputCell = document.getElementById(inputCellId);
                     if (inputCell) {
@@ -200,6 +206,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const outputWidth = Math.floor((inputWidth + 2 * padding - effectiveKernelWidth) / stride) + 1;
         
         outputDimEl.textContent = `${outputHeight} × ${outputWidth}`;
+
+        if (outputHeight <= 0 || outputWidth <= 0) {
+            stopAnimation();
+            outputMatrix = [];
+            inputMatrixEl.innerHTML = '';
+            weightMatrixEl.innerHTML = '';
+            outputMatrixEl.innerHTML = '';
+            outputMatrixEl.textContent = 'Invalid output size. Increase input/padding or reduce kernel/dilation/stride.';
+            return;
+        }
         
         // Generate random matrices
         generateMatrices(inputHeight, inputWidth, kernelHeight, kernelWidth, padding, outputHeight, outputWidth);
@@ -333,32 +349,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (type === 'output' && inputType === 'image') {
                         cell.classList.add('image-cell');
                         
-                        // Map output value to a color intensity
-                        // Find min/max values in the output matrix for normalization
-                        const flatOutput = outputMatrix.flat();
-                        const minOutput = Math.min(...flatOutput);
-                        const maxOutput = Math.max(...flatOutput);
                         const outputValue = matrix[i][j];
                         
-                        // Normalize output value to 0-255 range for visualization
-                        let normalizedValue;
-                        if (maxOutput !== minOutput) {
-                            normalizedValue = Math.round(((outputValue - minOutput) / (maxOutput - minOutput)) * 255);
-                        } else {
-                            normalizedValue = 128; // Middle gray if all values are the same
-                        }
-                        
-                        // Apply a blue-to-red colormap for better visualization of positive/negative values
+                        // Apply a blue-to-red colormap for positive/negative values
+                        // using the max absolute activation to avoid divide-by-zero and NaN colors.
+                        const flatOutput = outputMatrix.flat();
+                        const maxAbsOutput = Math.max(...flatOutput.map(v => Math.abs(v)), 1);
+                        const intensity = Math.min(255, Math.round((Math.abs(outputValue) / maxAbsOutput) * 255));
+
                         let red, green, blue;
                         if (outputValue < 0) {
-                            // Negative values: blue tones
-                            const intensity = Math.abs(outputValue - minOutput) / Math.abs(minOutput) * 255;
                             red = Math.max(0, 255 - intensity);
                             green = Math.max(0, 255 - intensity);
                             blue = 255;
                         } else {
-                            // Positive values: red tones
-                            const intensity = (outputValue / maxOutput) * 255;
                             red = 255;
                             green = Math.max(0, 255 - intensity);
                             blue = Math.max(0, 255 - intensity);
